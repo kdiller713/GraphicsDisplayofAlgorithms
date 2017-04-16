@@ -2,16 +2,24 @@ package Core;
 
 import java.awt.Graphics;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class GDAForm {
     private Algorithm algo;
     private AlgoPanel display;
 
-    public GDAForm(Algorithm a) {
+    public GDAForm(Algorithm a, int w, int h) {
         algo = a;
         
-        // TODO Auto-generated constructor stub
+        JFrame frame = new JFrame(a.getName());
+        frame.setSize(w ,h);
+        
+        display = new AlgoPanel();
+        frame.add(display);
+        
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
     }
 
     public void update() {
