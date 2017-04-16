@@ -2,19 +2,17 @@ package Core;
 
 public class GDAThread implements Runnable {
     private GDAForm form;
-    private Algorithm algo;
     private long sleep;
 
-    public GDAThread(Algorithm a, long s) {
-        form = new GDAForm(a);
-        algo = a;
+    public GDAThread(GDAForm f, long s) {
+        form = f;
         sleep = s;
     }
 
     @Override
     public void run() {
-        while (!algo.isDone()) {
-            algo.tick();
+        while (!form.getAlgorithm().isDone()) {
+            form.getAlgorithm().tick();
             form.update();
 
             try {

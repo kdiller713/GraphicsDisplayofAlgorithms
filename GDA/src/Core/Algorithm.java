@@ -7,7 +7,7 @@ public interface Algorithm {
 
     public boolean isDone();
 
-    public void display(Graphics g);
+    public void display(Graphics g, int width, int height);
 
     public String getName();
 }
