@@ -8,9 +8,11 @@ import javax.swing.JPanel;
 public class GDAForm {
     private Algorithm algo;
     private AlgoPanel display;
+    private long sleep;
 
-    public GDAForm(Algorithm a, int w, int h) {
+    public GDAForm(Algorithm a, int w, int h, long s) {
         algo = a;
+        sleep = s;
         
         JFrame frame = new JFrame(a.getName());
         frame.setSize(w ,h);
@@ -26,13 +28,21 @@ public class GDAForm {
         display.repaint();
     }
     
+    public void run(){
+        while (!algo.isDone()) {
+            algo.tick();
+            update();
+
+            try {
+                Thread.sleep(sleep);
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+    
     /*
      * Theese are to allow for the same form, but change what the algorithm is.
      */
-    public Algorithm getAlgorithm(){
-        return algo;
-    }
-    
     public void setAlgorithm(Algorithm a){
         algo = a;
     }
