@@ -55,7 +55,7 @@ public class DepthFirst implements Algorithm {
         Point location = new Point((int) (Math.random() * size),
                 (int) (Math.random() * size));
 
-        location = new Point(size - 1, size - 1);
+        //location = new Point(size - 1, size - 1);
 
         ArrayList<Point> path = new ArrayList<Point>();
         ArrayList<Point> empty;
