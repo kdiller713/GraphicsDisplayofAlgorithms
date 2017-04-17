@@ -10,7 +10,7 @@ public class SelectionSort implements Algorithm {
     public static void main(String[] args) throws Exception {
         SelectionSort s = new SelectionSort(100);
 
-        GDAForm form = new GDAForm(s, 1000, 1000, 100);
+        GDAForm form = new GDAForm(s, 1000, 1000, 10);
 
         while (true) {
             s.randomize();
@@ -28,6 +28,7 @@ public class SelectionSort implements Algorithm {
     private STATE state;
     private int ind;
     private int min;
+    private int loc;
 
     public SelectionSort(int n) {
         elements = new int[n];
@@ -35,6 +36,8 @@ public class SelectionSort implements Algorithm {
 
     public void randomize() {
         ind = 0;
+        min = 0;
+        loc = ind + 1;
         state = STATE.SEARCH;
 
         for (int i = 0; i < elements.length; i++) {
@@ -57,20 +60,21 @@ public class SelectionSort implements Algorithm {
     public void tick() {
         switch (state) {
         case SEARCH:
-            min = ind;
-
-            for (int i = ind + 1; i < elements.length; i++) {
-                if (elements[i] < elements[min])
-                    min = i;
+            if(loc < elements.length){
+                if(elements[loc] < elements[min])
+                    min = loc;
+                
+                loc++;
+            }else{
+                state = STATE.SWAP;
             }
-
-            state = STATE.SWAP;
             break;
         case SWAP:
             swap(min, ind);
             state = STATE.SEARCH;
-            min = ind;
             ind++;
+            min = ind;
+            loc = min + 1;
             break;
         }
     }
@@ -92,8 +96,12 @@ public class SelectionSort implements Algorithm {
         }
 
         g.setColor(Color.RED);
+        if(loc >= 0 && loc < elements.length){
+            g.fillRect(10 + w * loc, 10, w, elements[loc] * h);
+        }
 
-        if (min >= 0) {
+        if (min >= 0 && min < elements.length) {
+            g.setColor(Color.green);
             g.fillRect(10 + w * min, 10, w, elements[min] * h);
         }
     }

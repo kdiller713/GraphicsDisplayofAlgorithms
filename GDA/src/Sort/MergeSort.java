@@ -46,6 +46,7 @@ public class MergeSort implements Algorithm {
     }
 
     public void randomize() {
+        stack = new KStack<StackElements>();
         StackElements start = new StackElements(STATE.DIVE_LEFT, 0,
                 elements.length - 1);
         stack.push(start);
