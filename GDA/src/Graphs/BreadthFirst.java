@@ -4,15 +4,16 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import Core.Algorithm;
 import Core.GDAForm;
 import LinkedLibraries.Lists.KInvalidException;
 import LinkedLibraries.Lists.KStack;
 
-public class DepthFirst implements Algorithm {
+public class BreadthFirst implements Algorithm {
     public static void main(String[] args) throws Exception {
-        DepthFirst df = new DepthFirst(100);
+        BreadthFirst df = new BreadthFirst(100);
         GDAForm form = new GDAForm(df, 1000, 1000, 10);
 
         while (true) {
@@ -23,30 +24,37 @@ public class DepthFirst implements Algorithm {
         }
     }
 
+    private enum STATE {
+        FIND, TRACE
+    }
+
     private boolean[][] horizontal;
     private boolean[][] vertical;
     private int size;
 
     private boolean done;
-    private boolean[][] visited;
-    private int[][] inStack;
+    private int[][] visited;
     private KStack<Point> path;
+    private int val;
+    private STATE state;
+    private KStack<Point> sol;
 
-    public DepthFirst(int d) {
+    public BreadthFirst(int d) {
         horizontal = new boolean[d + 1][d];
         vertical = new boolean[d][d + 1];
         size = d;
 
-        visited = new boolean[d][d];
-        inStack = new int[d][d];
+        visited = new int[d][d];
     }
 
     public void generate() {
         reset();
         path = new KStack<Point>();
         path.push(new Point(0, 0));
-        visited[0][0] = true;
-        inStack[0][0] = 0;
+        visited[0][0] = 0;
+        val = 0;
+        state = STATE.FIND;
+        sol = new KStack<Point>();
 
         boolean[][] visited = new boolean[size][size];
         int nVisited = size * size;
@@ -55,7 +63,7 @@ public class DepthFirst implements Algorithm {
         Point location = new Point((int) (Math.random() * size),
                 (int) (Math.random() * size));
 
-        //location = new Point(size - 1, size - 1);
+        // location = new Point(size - 1, size - 1);
 
         ArrayList<Point> path = new ArrayList<Point>();
         ArrayList<Point> empty;
@@ -125,8 +133,7 @@ public class DepthFirst implements Algorithm {
                 vertical[i][j] = true;
 
                 if (j < size) {
-                    visited[i][j] = false;
-                    inStack[i][j] = -1;
+                    visited[i][j] = -1;
                 }
             }
         }
@@ -136,43 +143,82 @@ public class DepthFirst implements Algorithm {
 
     @Override
     public void tick() {
+        switch (state) {
+        case FIND:
+            nextIter();
+            break;
+        case TRACE:
+            back();
+            break;
+        }
+    }
+
+    private void back() {
         try {
-            Point top = path.peek();
+            Point top = sol.peek();
 
-            ArrayList<Point> next = new ArrayList<Point>(4);
-
-            if (top.x > 0 && !visited[top.y][top.x - 1]
+            if (top.x > 0
+                    && visited[top.y][top.x - 1] == visited[top.y][top.x] - 1
                     && !vertical[top.y][top.x]) {
-                next.add(new Point(top.x - 1, top.y));
-            }
-            if (top.y > 0 && !visited[top.y - 1][top.x]
+                sol.push(new Point(top.x - 1, top.y));
+            } else if (top.y > 0
+                    && visited[top.y - 1][top.x] == visited[top.y][top.x] - 1
                     && !horizontal[top.y][top.x]) {
-                next.add(new Point(top.x, top.y - 1));
-            }
-            if (top.y < size - 1 && !visited[top.y + 1][top.x]
+                sol.push(new Point(top.x, top.y - 1));
+            } else if (top.y < size - 1
+                    && visited[top.y + 1][top.x] == visited[top.y][top.x] - 1
                     && !horizontal[top.y + 1][top.x]) {
-                next.add(new Point(top.x, top.y + 1));
-            }
-            if (top.x < size - 1 && !visited[top.y][top.x + 1]
+                sol.push(new Point(top.x, top.y + 1));
+            } else if (top.x < size - 1
+                    && visited[top.y][top.x + 1] == visited[top.y][top.x] - 1
                     && !vertical[top.y][top.x + 1]) {
-                next.add(new Point(top.x + 1, top.y));
+                sol.push(new Point(top.x + 1, top.y));
             }
 
-            if (next.size() == 0) {
-                path.pop();
-                inStack[top.y][top.x] = -1;
-            } else {
-                Point n = next.get((int) (Math.random() * next.size()));
-                visited[n.y][n.x] = true;
-                inStack[n.y][n.x] = path.length() - 1;
-                path.push(n);
+            if (top.x == 0 && top.y == 0)
+                done = true;
+        } catch (KInvalidException e) {
 
-                if (n.x == size - 1 && n.y == size - 1)
-                    done = true;
+        }
+    }
+
+    private void nextIter() {
+        try {
+            KStack<Point> next = new KStack<Point>();
+            val++;
+
+            while (path.length() > 0) {
+                Point top = path.pop();
+                if (top.x > 0 && visited[top.y][top.x - 1] == -1
+                        && !vertical[top.y][top.x]) {
+                    next.push(new Point(top.x - 1, top.y));
+                    visited[top.y][top.x - 1] = val;
+                }
+                if (top.y > 0 && visited[top.y - 1][top.x] == -1
+                        && !horizontal[top.y][top.x]) {
+                    next.push(new Point(top.x, top.y - 1));
+                    visited[top.y - 1][top.x] = val;
+                }
+                if (top.y < size - 1 && visited[top.y + 1][top.x] == -1
+                        && !horizontal[top.y + 1][top.x]) {
+                    next.push(new Point(top.x, top.y + 1));
+                    visited[top.y + 1][top.x] = val;
+                }
+                if (top.x < size - 1 && visited[top.y][top.x + 1] == -1
+                        && !vertical[top.y][top.x + 1]) {
+                    next.push(new Point(top.x + 1, top.y));
+                    visited[top.y][top.x + 1] = val;
+                }
+            }
+
+            path = next;
+            if (visited[size - 1][size - 1] > 0) {
+                state = STATE.TRACE;
+                sol.push(new Point(size - 1, size - 1));
+                val++;
             }
         } catch (KInvalidException e) {
-            e.printStackTrace();
-            System.exit(0);
+
         }
     }
 
@@ -188,7 +234,7 @@ public class DepthFirst implements Algorithm {
 
         int boxW = (width - 20) / size;
         int boxH = (height - 20) / size;
-        
+
         int v = 0xFF;
 
         for (int i = 0; i < size; i++) {
@@ -208,22 +254,30 @@ public class DepthFirst implements Algorithm {
                     g.drawLine(vx, vy, vx, vy + boxH);
                 }
 
-                if (j < visited[i].length && visited[i][j]) {
-                    int per = v * inStack[i][j] / path.length();
-                    if (inStack[i][j] >= 0)
-                        g.setColor(new Color(0, per, v - per));
-                    else if (visited[i][j])
-                        g.setColor(Color.RED);
+                if (j < visited[i].length && visited[i][j] != -1 && val > 0) {
+                    int per = v * visited[i][j] / val;
+                    if (visited[i][j] == val)
+                        g.setColor(Color.GREEN);
+                    else
+                        g.setColor(new Color(0, per, 0xFF - per));
 
                     g.fillRect(11 + j * boxW, 11 + i * boxH, boxW - 2, boxH - 2);
                 }
             }
         }
+
+        g.setColor(Color.RED);
+
+        Iterator<Point> lst = sol.iterator();
+        while (lst.hasNext()) {
+            Point p = lst.next();
+
+            g.fillRect(11 + p.x * boxW, 11 + p.y * boxH, boxW - 2, boxH - 2);
+        }
     }
 
     @Override
     public String getName() {
-        return "Depth First Search";
+        return "Breadth First Search";
     }
-
 }
