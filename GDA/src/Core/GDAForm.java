@@ -3,6 +3,7 @@ package Core;
 import java.awt.Graphics;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class GDAForm {
@@ -13,13 +14,13 @@ public class GDAForm {
     public GDAForm(Algorithm a, int w, int h, long s) {
         algo = a;
         sleep = s;
-        
+
         JFrame frame = new JFrame(a.getName());
-        frame.setSize(w ,h);
-        
+        frame.setSize(w, h);
+
         display = new AlgoPanel();
         frame.add(display);
-        
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
@@ -27,8 +28,8 @@ public class GDAForm {
     public void update() {
         display.repaint();
     }
-    
-    public void run(){
+
+    public void run() {
         while (!algo.isDone()) {
             algo.tick();
             update();
@@ -39,13 +40,14 @@ public class GDAForm {
             }
         }
     }
-    
+
     /*
      * Theese are to allow for the same form, but change what the algorithm is.
      */
-    public void setAlgorithm(Algorithm a){
+    public void setAlgorithm(Algorithm a) {
         algo = a;
     }
+
     /*
      * End algorithm methods
      */
@@ -55,9 +57,15 @@ public class GDAForm {
         public void paintComponent(Graphics g) {
             int width = this.getWidth();
             int height = this.getHeight();
-            
+
             g.clearRect(0, 0, width, height);
-            algo.display(g, width, height);
+
+            try {
+                algo.display(g, width, height);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(0);
+            }
         }
     }
 }
