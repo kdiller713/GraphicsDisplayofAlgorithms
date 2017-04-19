@@ -30,12 +30,13 @@ public class GDAForm {
 
     public void run() {
         while (!algo.isDone()) {
-            algo.tick();
-            update();
-
             try {
+                algo.tick();
+                update();
                 Thread.sleep(sleep);
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(0);
             }
         }
     }
