@@ -1,0 +1,21 @@
+<project default="jar">
+
+    <target name="clean">
+        <delete dir="bin"/>
+        <delete file="GDA.jar" />
+    </target>
+
+    <target name="compile" depends="clean">
+        <mkdir dir="bin"/>
+        <javac srcdir="src" destdir="bin"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar destfile="GDA.jar" basedir="bin">
+            <manifest>
+                <attribute name="Main-Class" value="Application"/>
+            </manifest>
+        </jar>
+    </target>
+
+</project>
