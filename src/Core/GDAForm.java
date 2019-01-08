@@ -51,7 +51,6 @@ public class GDAForm {
     /*
      * End algorithm methods
      */
-
     private class AlgoPanel extends JPanel {
         @Override
         public void paintComponent(Graphics g) {
