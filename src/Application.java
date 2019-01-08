@@ -8,7 +8,7 @@ public class Application {
             return;
         }
         
-        Class tmp = null;
+        Class<?> tmp = null;
     
         try{
             tmp = Class.forName(args[0]);
