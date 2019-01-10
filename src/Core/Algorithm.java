@@ -2,24 +2,21 @@ package Core;
 
 import java.awt.Graphics;
 
-public interface Algorithm {
+import javax.swing.JPanel;
+
+public abstract class Algorithm extends JPanel {
     /**
      * This method is used to tell the algorithm to update to the next state
      */
-    public void tick();
+    public abstract void tick();
 
     /**
      * Used to determine if the algorithm is finished or not
      */
-    public boolean isDone();
-
-    /**
-     * Updates the graphics of the GUI to show the new state
-     */
-    public void display(Graphics g, int width, int height);
+    public abstract boolean isDone();
 
     /**
      * The name to display on the GUI
      */
-    public String getName();
+    public abstract String getName();
 }

@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import Core.Algorithm;
 import Core.GDAForm;
 
-public class Period implements Algorithm {
+public class Period extends Algorithm {
     public static void main(String[] args) throws Exception {
         long n = 101 * 103;
         Period df = new Period(n, n - 2);
@@ -47,7 +47,11 @@ public class Period implements Algorithm {
     }
 
     @Override
-    public void display(Graphics g, int width, int height) {
+    public void paintComponent(Graphics g) {
+        int width = this.getWidth();
+        int height = this.getHeight();
+        g.clearRect(0, 0, width, height);
+        
         width = width - 10;
         height = height - 10;
 

@@ -11,7 +11,7 @@ import Core.GDAForm;
 import LinkedLibraries.Lists.KInvalidException;
 import LinkedLibraries.Lists.KStack;
 
-public class BreadthFirst implements Algorithm {
+public class BreadthFirst extends Algorithm {
     public static void main(String[] args) throws Exception {
         BreadthFirst df = new BreadthFirst(100);
         GDAForm form = new GDAForm(df, 1000, 1000, 10);
@@ -228,7 +228,11 @@ public class BreadthFirst implements Algorithm {
     }
 
     @Override
-    public void display(Graphics g, int width, int height) {
+    public void paintComponent(Graphics g) {
+        int width = this.getWidth();
+        int height = this.getHeight();
+        g.clearRect(0, 0, width, height);
+        
         int vx, vy;
         int hx, hy;
 

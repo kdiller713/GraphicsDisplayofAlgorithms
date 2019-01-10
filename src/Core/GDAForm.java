@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 
 public class GDAForm {
     private Algorithm algo;
-    private AlgoPanel display;
     private long sleep;
 
     public GDAForm(Algorithm a, int w, int h, long s) {
@@ -17,15 +16,14 @@ public class GDAForm {
         JFrame frame = new JFrame(a.getName());
         frame.setSize(w, h);
 
-        display = new AlgoPanel();
-        frame.add(display);
+        frame.add(algo);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
 
     public void update() {
-        display.repaint();
+        algo.repaint();
     }
 
     public void run() {
@@ -46,25 +44,5 @@ public class GDAForm {
      */
     public void setAlgorithm(Algorithm a) {
         algo = a;
-    }
-
-    /*
-     * End algorithm methods
-     */
-    private class AlgoPanel extends JPanel {
-        @Override
-        public void paintComponent(Graphics g) {
-            int width = this.getWidth();
-            int height = this.getHeight();
-
-            g.clearRect(0, 0, width, height);
-
-            try {
-                algo.display(g, width, height);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.exit(0);
-            }
-        }
     }
 }

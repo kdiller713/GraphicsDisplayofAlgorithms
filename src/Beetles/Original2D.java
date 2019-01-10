@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import Core.Algorithm;
 import Core.GDAForm;
 
-public class Original2D implements Algorithm {
+public class Original2D extends Algorithm {
     public static void main(String[] args) throws Exception {
         Original2D df = new Original2D(1000);
         GDAForm form = new GDAForm(df, 1000, 1000, 50);
@@ -69,14 +69,18 @@ public class Original2D implements Algorithm {
     }
 
     @Override
-    public void display(Graphics g, int width, int height) {
+    public String getName() {
+        return "Beetles (1 Partner)";
+    }
+    
+    @Override
+    public void paintComponent(Graphics g){
+        int width = this.getWidth();
+        int height = this.getHeight();
+        g.clearRect(0, 0, width, height);
+ 
         for(Beetle b : beetles){
             b.draw(g, width, height);
         }
-    }
-
-    @Override
-    public String getName() {
-        return "Beetles (1 Partner)";
     }
 }

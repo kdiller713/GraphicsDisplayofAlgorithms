@@ -8,7 +8,7 @@ import Core.GDAForm;
 import LinkedLibraries.Lists.KInvalidException;
 import LinkedLibraries.Lists.KStack;
 
-public class QuickSort implements Algorithm {
+public class QuickSort extends Algorithm {
     public static void main(String[] args) throws Exception {
         QuickSort s = new QuickSort(100);
 
@@ -135,7 +135,11 @@ public class QuickSort implements Algorithm {
     }
 
     @Override
-    public void display(Graphics g, int width, int height) {
+    public void paintComponent(Graphics g) {
+        int width = this.getWidth();
+        int height = this.getHeight();
+        g.clearRect(0, 0, width, height);
+        
         int w = (width - 20) / elements.length;
         int h = (height - 20) / elements.length;
         g.setColor(Color.BLUE);
