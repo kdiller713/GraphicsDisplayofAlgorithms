@@ -1,5 +1,10 @@
 import java.lang.reflect.Method;
 
+/**
+ * This will find a precompiled algorithm to run.
+ * The only arg is the package directory and name of the algorithm file.
+ * The algorithm should have a main for this to call.
+ */
 public class Application {
     public static void main(String[] args) throws Exception{
         if(args.length < 1){
@@ -9,7 +14,8 @@ public class Application {
         }
         
         Class<?> tmp = null;
-    
+        
+        // Checks to see if the java file exists
         try{
             tmp = Class.forName(args[0]);
         }catch(Exception e){
@@ -19,6 +25,7 @@ public class Application {
         
         Method m = null;
         
+        // Checks to see if the algorithm has a main method to call
         try{
             m = tmp.getMethod("main", String[].class);
         }catch(Exception e){
@@ -27,6 +34,21 @@ public class Application {
         }
         
         // This is outside of a try catch so that any errors are propigated
-        m.invoke(null, new Object[]{args});
+        m.invoke(null, new Object[]{restArgs(args, 1)});
+    }
+    
+    /**
+     * Gets the remaining arguments from the command line to be passed on to the algorithm.
+     */
+    private static String[] restArgs(String[] args, int start){
+        if(args.length <= start) return new String[] {};
+        
+        String[] rest = new String[args.length - start];
+        
+        for(int i = start; i < args.length; i++){
+            rest[i - start] = args[i];
+        }
+        
+        return rest;
     }
 }

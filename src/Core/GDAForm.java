@@ -5,10 +5,17 @@ import java.awt.Graphics;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+/**
+ * Creates a GUI for the algorithm to be displayed on.
+ */
 public class GDAForm {
     private Algorithm algo;
     private long sleep;
 
+    /**
+     * Creates the GDA form with an algorithm, the dimensions of the GUI, and the time between iterations
+     * for the algorithm.
+     */
     public GDAForm(Algorithm a, int w, int h, long s) {
         algo = a;
         sleep = s;
@@ -22,27 +29,19 @@ public class GDAForm {
         frame.setVisible(true);
     }
 
-    public void update() {
-        algo.repaint();
-    }
-
+    /**
+     * Starts running the algorithm and updating the UI as it goes.
+     */
     public void run() {
         while (!algo.isDone()) {
             try {
                 algo.tick();
-                update();
+                algo.repaint();
                 Thread.sleep(sleep);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.exit(0);
             }
         }
-    }
-
-    /*
-     * Theese are to allow for the same form, but change what the algorithm is.
-     */
-    public void setAlgorithm(Algorithm a) {
-        algo = a;
     }
 }
