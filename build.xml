@@ -7,7 +7,9 @@
 
     <target name="compile" depends="clean">
         <mkdir dir="bin"/>
-        <javac includeantruntime="false" srcdir="src" destdir="bin"/>
+        <javac includeantruntime="false" srcdir="src" destdir="bin">
+            <classpath refid="build.classpath" />
+        </javac>
     </target>
 
     <target name="jar" depends="compile">
@@ -15,7 +17,21 @@
             <manifest>
                 <attribute name="Main-Class" value="Application"/>
             </manifest>
+            <zipgroupfileset dir="JarFiles" includes="**/*.jar" />
         </jar>
     </target>
+
+    <target name="runAnimation" depends="jar">
+        <java jar="GDA.jar" fork="true">
+            <sysproperty key="java.library.path" path="./lib"/>
+            <arg value="Animation3D.MovingBall"/>
+        </java>
+    </target>
+
+    <path id="build.classpath">
+        <fileset dir="JarFiles">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
 
 </project>
