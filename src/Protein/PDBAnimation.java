@@ -14,6 +14,8 @@ import javax.media.j3d.Appearance;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Color3f;
 
+import javax.swing.JLabel;
+
 import com.sun.j3d.utils.geometry.Sphere;
 
 import java.awt.Dimension;
@@ -33,17 +35,21 @@ public class PDBAnimation extends Algorithm {
         form.run();
     }
     
-    private static final float SCALE_FACTOR = 100.0f;
+    private static final float SCALE_FACTOR = 25.0f;
     private static final float RADIUS = 1.4f / SCALE_FACTOR;
     
     private int step;
     private float[][][] locationSteps;
     private TransformGroup[] atms;
+    private JLabel stepLbl;
     
     public PDBAnimation(String pdbFile){
         step = 0;
         int[] data = getData(pdbFile);
         readPDBFile(pdbFile, data[0], data[1]);
+        
+        stepLbl = new JLabel("Step: " + step);
+        this.add(stepLbl);
         
         Viewer viewer = new Viewer();
         viewer.addMove();
@@ -80,6 +86,8 @@ public class PDBAnimation extends Algorithm {
             int atomInd = -1;
             int ind = 0;
             String line = null;
+            float min = Float.MAX_VALUE;
+            float max = Float.MIN_VALUE;
             
             while(sc.hasNextLine()){
                 line = sc.nextLine();
@@ -103,6 +111,13 @@ public class PDBAnimation extends Algorithm {
                     ind = getNextNonEmpty(split, ind + 1);
                     locationSteps[modelInd][atomInd][2] = Float.parseFloat(split[ind]) / SCALE_FACTOR;
                     
+                    min = Math.min(min, locationSteps[modelInd][atomInd][0]);
+                    max = Math.max(max, locationSteps[modelInd][atomInd][0]);
+                    min = Math.min(min, locationSteps[modelInd][atomInd][1]);
+                    max = Math.max(max, locationSteps[modelInd][atomInd][1]);
+                    min = Math.min(min, locationSteps[modelInd][atomInd][2]);
+                    max = Math.max(max, locationSteps[modelInd][atomInd][2]);
+                    
                     for(int i = 9; i < 11; i++){
                         ind = getNextNonEmpty(split, ind + 1);
                     }
@@ -114,6 +129,16 @@ public class PDBAnimation extends Algorithm {
             }
                 
             sc.close();
+        
+            float mid = (max + min) / 2.0f;
+            
+            for(int i = 0; i < locationSteps.length; i++){
+                for(int j = 0; j < locationSteps[i].length; j++){
+                    for(int k = 0; k < locationSteps[i][j].length; k++){
+                        locationSteps[i][j][k] = locationSteps[i][j][k] - mid;
+                    }
+                }
+            }
         }catch(Exception e){
             throw new RuntimeException("Failed to read file: " + e.getMessage());
         }
@@ -210,6 +235,8 @@ public class PDBAnimation extends Algorithm {
             trans.setTranslation(new Vector3f(locationSteps[step][i]));
             atms[i].setTransform(trans);
         }
+        
+        stepLbl.setText("Step: " + step);
     }
 
     @Override
