@@ -26,12 +26,11 @@ public class MovingBall extends Algorithm {
     }
     
     private float x;
-    private Viewer viewer;
     private TransformGroup tg;
     
     public MovingBall(){
         x = -1.0f;
-        viewer = new Viewer();
+        Viewer viewer = new Viewer();
         
         Sphere s = new Sphere(0.1f);
         
