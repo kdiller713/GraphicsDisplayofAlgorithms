@@ -24,7 +24,7 @@
     <target name="runAnimation" depends="jar">
         <java jar="GDA.jar" fork="true">
             <sysproperty key="java.library.path" path="./lib"/>
-            <arg value="Animation3D.MovingBall"/>
+            <arg value="Protein.PDBAnimation"/>
         </java>
     </target>
 

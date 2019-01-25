@@ -30,7 +30,14 @@ import java.io.File;
 
 public class PDBAnimation extends Algorithm {
     public static void main(String[] args) throws Exception {
-        PDBAnimation df = new PDBAnimation("Data/md1UBQ.pdb");
+        PDBAnimation df;
+        
+        if(args.length > 0){
+            df = new PDBAnimation(args[0]);
+        }else{
+            df = new PDBAnimation("Data/md1UBQ.pdb");
+        }
+        
         GDAForm form = new GDAForm(df, 500, 500, 10);
         form.run();
     }
